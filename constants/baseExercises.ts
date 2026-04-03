@@ -640,6 +640,79 @@ export const baseExercises: Record<string, Exercise> = {
       'Lower with control',
     ],
   },
+  // ═══════════════════════════════════════════════════════
+  // WARMUP & COOLDOWN
+  // ═══════════════════════════════════════════════════════
+  wrist_stretches: {
+    id: 'wrist_stretches',
+    name: 'Wrist Prep',
+    group: 'Push',
+    equipment: ['None'],
+    level: 0,
+    targetRepsToUnlock: 1,
+    targetSetsToUnlock: 1,
+    formCues: ['Palms down, lean forward', 'Palms up, fingers back', 'Wrist circles 30s'],
+  },
+  band_dislocates: {
+    id: 'band_dislocates',
+    name: 'Shoulder Mobility',
+    group: 'Push',
+    equipment: ['None'],
+    level: 0,
+    targetRepsToUnlock: 1,
+    targetSetsToUnlock: 1,
+    formCues: ['Straight arms throughout', 'Pull band/towel apart', 'Slow and controlled'],
+  },
+  scapular_pushups: {
+    id: 'scapular_pushups',
+    name: 'Scapular Awakening',
+    group: 'Push',
+    equipment: ['None'],
+    level: 0,
+    targetRepsToUnlock: 1,
+    targetSetsToUnlock: 1,
+    formCues: ['Arms stay locked straight', 'Pinch shoulder blades slowly', 'Push away as high as possible'],
+  },
+  deep_squat_sit: {
+    id: 'deep_squat_sit',
+    name: 'Deep Squat Sit',
+    group: 'Legs',
+    equipment: ['None'],
+    level: 0,
+    targetRepsToUnlock: 1,
+    targetSetsToUnlock: 1,
+    formCues: ['Heels flat on floor', 'Pry knees open with elbows', 'Straight back'],
+  },
+  passive_dead_hang: {
+    id: 'passive_dead_hang',
+    name: 'Spinal Decompression',
+    group: 'Pull',
+    equipment: ['Pullup Bar'],
+    level: 0,
+    targetRepsToUnlock: 1,
+    targetSetsToUnlock: 1,
+    formCues: ['Relax completely', 'Let lats stretch', 'Breathe deep'],
+  },
+  doorway_pec_stretch: {
+    id: 'doorway_pec_stretch',
+    name: 'Chest Opener',
+    group: 'Push',
+    equipment: ['Wall'],
+    level: 0,
+    targetRepsToUnlock: 1,
+    targetSetsToUnlock: 1,
+    formCues: ['Fix forearm on frame', 'Gently lean forward/turn', 'Switch sides'],
+  },
+  seated_pike_stretch: {
+    id: 'seated_pike_stretch',
+    name: 'Posterior Chain',
+    group: 'Legs',
+    equipment: ['None'],
+    level: 0,
+    targetRepsToUnlock: 1,
+    targetSetsToUnlock: 1,
+    formCues: ['Legs straight out', 'Reach for toes', 'Exhale into the stretch'],
+  },
 };
 
 // Initial unlocked exercises — root of each progression chain
@@ -654,4 +727,11 @@ export const initialUnlockedExercises: string[] = [
   'nordic_curl',      // Direct leg skill
   'jump_squat',       // Power
   'single_leg_glute_bridge', // Posterior
+  'wrist_stretches',
+  'band_dislocates',
+  'scapular_pushups',
+  'deep_squat_sit',
+  'passive_dead_hang',
+  'doorway_pec_stretch',
+  'seated_pike_stretch',
 ];

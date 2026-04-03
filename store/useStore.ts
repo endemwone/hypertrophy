@@ -121,6 +121,22 @@ const initialRoutines: Routine[] = [
       'pistol_squat_assist', 'jump_squat', 'single_leg_glute_bridge', 'l_sit_tuck', 'v_sit'
     ],
     supersetPairs: []
+  },
+  {
+    id: 'routine_warmup',
+    name: 'Quick Calisthenics Warmup',
+    exerciseIds: [
+      'wrist_stretches', 'band_dislocates', 'scapular_pushups', 'deep_squat_sit'
+    ],
+    supersetPairs: []
+  },
+  {
+    id: 'routine_cooldown',
+    name: 'Post-Workout Cooldown',
+    exerciseIds: [
+      'passive_dead_hang', 'doorway_pec_stretch', 'seated_pike_stretch'
+    ],
+    supersetPairs: []
   }
 ];
 

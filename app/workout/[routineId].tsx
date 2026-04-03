@@ -9,6 +9,7 @@ import {
   Modal,
   StyleSheet,
   FlatList,
+  Pressable,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
@@ -27,6 +28,7 @@ import { Colors, FontSizes, Spacing, BorderRadius, MuscleGroupColors } from '@/c
 import RestTimer from '@/components/RestTimer';
 import PRBanner from '@/components/PRBanner';
 import WorkoutSetRow from '@/components/WorkoutSetRow';
+import BodyAnatomy from '@/components/BodyAnatomy';
 
 export default function WorkoutScreen() {
   const params = useLocalSearchParams<{ routineId: string; exercises?: string }>();
@@ -41,6 +43,9 @@ export default function WorkoutScreen() {
   const saveSession = useStore((s) => s.saveSession);
   const getLastSessionPerformance = useStore((s) => s.getLastSessionPerformance);
   const getPersonalBest = useStore((s) => s.getPersonalBest);
+
+  // Local state for UI
+  const [showPlaylist, setShowPlaylist] = useState(false);
 
   // Determine exercise list
   const isChaos = params.routineId === 'chaos';
@@ -348,10 +353,10 @@ export default function WorkoutScreen() {
           {isChaos ? 'Chaos Mode 🎲' : routine?.name || 'Workout'}
         </Text>
         <TouchableOpacity
-          onPress={() => setShowMenu(!showMenu)}
+          onPress={() => setShowPlaylist(true)}
           style={styles.headerBtn}
         >
-          <Feather name="more-vertical" size={24} color={Colors.textSecondary} />
+          <Feather name="list" size={24} color={Colors.accent} />
         </TouchableOpacity>
       </View>
 
@@ -395,20 +400,23 @@ export default function WorkoutScreen() {
 
         {/* Logger Zone */}
         <View style={styles.loggerZone}>
-          {/* Exercise name + number */}
-          <View style={styles.exerciseHeader}>
-            <View>
+          {/* Exercise Header + Anatomy */}
+          <View style={styles.exerciseHeaderRow}>
+            <View style={{ flex: 1 }}>
               <Text style={styles.exerciseCounter}>
                 Exercise {currentExerciseIndex + 1} of {sessionExerciseIds.length}
               </Text>
               <Text style={styles.exerciseName}>{currentExercise.name}</Text>
+              {isSuperset && (
+                <View style={styles.supersetBadge}>
+                  <Feather name="repeat" size={14} color={Colors.accent} />
+                  <Text style={styles.supersetText}>Superset</Text>
+                </View>
+              )}
             </View>
-            {isSuperset && (
-              <View style={styles.supersetBadge}>
-                <Feather name="repeat" size={14} color={Colors.accent} />
-                <Text style={styles.supersetText}>Superset</Text>
-              </View>
-            )}
+            <View style={styles.anatomyContainer}>
+              <BodyAnatomy highlightedGroup={currentExercise.group} size={80} />
+            </View>
           </View>
 
           {/* Ghost text */}
@@ -571,6 +579,59 @@ export default function WorkoutScreen() {
           </View>
         </TouchableOpacity>
       </Modal>
+
+      {/* Session Playlist Modal */}
+      <Modal
+        visible={showPlaylist}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setShowPlaylist(false)}
+      >
+        <View style={styles.sheetOverlay}>
+          <View style={styles.sheet}>
+            <View style={styles.sheetHandle} />
+            <Text style={styles.sheetTitle}>Session Roadmap</Text>
+            <ScrollView style={styles.sheetScroll}>
+              {sessionExerciseIds.map((exId, index) => {
+                const ex = exercises[exId];
+                if (!ex) return null;
+                const isActive = index === currentExerciseIndex;
+                const setsDone = allSetsThisSession.filter(s => s.exerciseId === exId).length;
+
+                return (
+                  <TouchableOpacity
+                    key={`${exId}-${index}`}
+                    style={[styles.playlistRow, isActive && styles.activePlaylistRow]}
+                    onPress={() => {
+                      navigateToExercise(index);
+                      setShowPlaylist(false);
+                    }}
+                  >
+                    <View style={styles.playlistIndex}>
+                      <Text style={[styles.playlistIndexText, isActive && styles.activeText]}>{index + 1}</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={[styles.playlistName, isActive && styles.activeText]}>{ex.name}</Text>
+                      <Text style={styles.playlistMeta}>{setsDone} sets logged</Text>
+                    </View>
+                    {isActive ? (
+                      <Feather name="play" size={16} color={Colors.accent} />
+                    ) : setsDone > 0 ? (
+                      <Feather name="check" size={16} color={Colors.success} />
+                    ) : null}
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+            <TouchableOpacity
+              style={styles.cancelBtn}
+              onPress={() => setShowPlaylist(false)}
+            >
+              <Text style={styles.cancelText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -667,11 +728,59 @@ const styles = StyleSheet.create({
   loggerZone: {
     padding: Spacing.lg,
   },
-  exerciseHeader: {
+  exerciseHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     marginBottom: Spacing.sm,
+  },
+  anatomyContainer: {
+    padding: Spacing.sm,
+    backgroundColor: Colors.surfaceElevated,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    borderColor: Colors.surfaceBorder,
+  },
+  playlistRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.md,
+    marginBottom: 4,
+  },
+  activePlaylistRow: {
+    backgroundColor: Colors.accentMuted,
+    borderWidth: 1,
+    borderColor: Colors.accent,
+  },
+  playlistIndex: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.surfaceElevated,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  playlistIndexText: {
+    color: Colors.textSecondary,
+    fontSize: FontSizes.sm,
+    fontWeight: '700',
+  },
+  activeText: {
+    color: Colors.accent,
+    fontWeight: '800',
+  },
+  playlistName: {
+    color: Colors.textPrimary,
+    fontSize: FontSizes.md,
+    fontWeight: '600',
+  },
+  playlistMeta: {
+    color: Colors.textMuted,
+    fontSize: FontSizes.xs,
+    marginTop: 2,
   },
   exerciseCounter: {
     color: Colors.textMuted,
@@ -695,6 +804,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
     borderRadius: BorderRadius.pill,
+    marginTop: 4,
   },
   supersetText: {
     color: Colors.accent,
