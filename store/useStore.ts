@@ -92,29 +92,36 @@ const asyncStorage: StateStorage = {
 
 const initialRoutines: Routine[] = [
   {
-    id: 'push_basics',
-    name: 'Push Basics',
-    exerciseIds: ['knee_pushup', 'wall_pike_pushup'],
-    supersetPairs: [],
+    id: 'routine_full_body',
+    name: 'Full Body Fundamentals',
+    exerciseIds: [
+      'pullup', 'bulgarian_split_squat', 
+      'ring_dip', 'nordic_curl', 
+      'ring_row', 'pseudo_planche_pushup', 
+      'hollow_body', 'dead_bug'
+    ],
+    supersetPairs: [
+      ['pullup', 'bulgarian_split_squat'],
+      ['ring_dip', 'nordic_curl'],
+      ['ring_row', 'pseudo_planche_pushup']
+    ]
   },
   {
-    id: 'pull_basics',
-    name: 'Pull Basics',
-    exerciseIds: ['dead_hang', 'ring_row'],
-    supersetPairs: [],
+    id: 'routine_upper',
+    name: 'Upper Body Power',
+    exerciseIds: [
+      'pullup', 'wall_pike_pushup', 'ring_row', 'diamond_pushup', 'scapula_pull'
+    ],
+    supersetPairs: []
   },
   {
-    id: 'core_basics',
-    name: 'Core Crusher',
-    exerciseIds: ['dead_bug', 'hollow_body'],
-    supersetPairs: [],
-  },
-  {
-    id: 'leg_day',
-    name: 'Leg Day',
-    exerciseIds: ['squat', 'bulgarian_split_squat'],
-    supersetPairs: [],
-  },
+    id: 'routine_lower',
+    name: 'Explosive Lower & Core',
+    exerciseIds: [
+      'pistol_squat_assist', 'jump_squat', 'single_leg_glute_bridge', 'l_sit_tuck', 'v_sit'
+    ],
+    supersetPairs: []
+  }
 ];
 
 const initialState: AppState = {

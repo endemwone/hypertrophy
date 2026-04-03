@@ -589,6 +589,57 @@ export const baseExercises: Record<string, Exercise> = {
       'Stand up without losing balance',
     ],
   },
+  nordic_curl: {
+    id: 'nordic_curl',
+    name: 'Nordic Curl',
+    group: 'Legs',
+    equipment: ['None'],
+    level: 7,
+    targetRepsToUnlock: 5,
+    targetSetsToUnlock: 3,
+    nextProgressionId: null,
+    prevProgressionId: null,
+    formCues: [
+      'Kneel on soft surface, ankles anchored',
+      'Lower torso slowly using hamstrings',
+      'Keep hips slightly flexed or straight',
+      'Push back up with minimal hand help',
+    ],
+  },
+  jump_squat: {
+    id: 'jump_squat',
+    name: 'Jump Squat',
+    group: 'Legs',
+    equipment: ['None'],
+    level: 3,
+    targetRepsToUnlock: 12,
+    targetSetsToUnlock: 3,
+    nextProgressionId: null,
+    prevProgressionId: 'squat',
+    formCues: [
+      'Squat down to parallel',
+      'Explode upwards aggressively',
+      'Land softly on balls of feet',
+      'Reset and repeat immediately',
+    ],
+  },
+  single_leg_glute_bridge: {
+    id: 'single_leg_glute_bridge',
+    name: 'Single Leg Glute Bridge',
+    group: 'Legs',
+    equipment: ['None'],
+    level: 2,
+    targetRepsToUnlock: 15,
+    targetSetsToUnlock: 3,
+    nextProgressionId: 'nordic_curl',
+    prevProgressionId: null,
+    formCues: [
+      'Lie on back, one leg bent, one extended',
+      'Drive through heel of bent leg',
+      'Squeeze glute at the top',
+      'Lower with control',
+    ],
+  },
 };
 
 // Initial unlocked exercises — root of each progression chain
@@ -600,4 +651,7 @@ export const initialUnlockedExercises: string[] = [
   'ring_row',         // Pull rings chain
   'dead_bug',         // Core chain
   'squat',            // Legs chain
+  'nordic_curl',      // Direct leg skill
+  'jump_squat',       // Power
+  'single_leg_glute_bridge', // Posterior
 ];
