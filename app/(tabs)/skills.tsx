@@ -15,6 +15,7 @@ import { MuscleGroup, Exercise, Equipment } from '@/store/types';
 import { Colors, FontSizes, Spacing, BorderRadius, MuscleGroupColors } from '@/constants/theme';
 import ProgressionRail from '@/components/ProgressionRail';
 import AddExerciseModal from '@/components/AddExerciseModal';
+import ProgressBar from '@/components/ProgressBar';
 
 const GROUPS: MuscleGroup[] = ['Push', 'Pull', 'Core', 'Legs'];
 
@@ -211,15 +212,19 @@ export default function SkillTreeScreen() {
                 {/* Unlock requirements */}
                 {selectedExercise.nextProgressionId && isUnlocked && (
                   <>
-                    <Text style={styles.sheetLabel}>UNLOCK NEXT</Text>
-                    <Text style={styles.sheetDesc}>
-                      Hit {selectedExercise.targetRepsToUnlock} reps ×{' '}
-                      {selectedExercise.targetSetsToUnlock} sets for{' '}
-                      {profile.unlockThreshold} sessions to unlock next skill
-                    </Text>
-                    <Text style={styles.progressText}>
-                      Progress: {getQualifyingSessions(selectedExercise.id)}/
-                      {profile.unlockThreshold} qualifying sessions
+                    <View style={styles.sheetRowBetween}>
+                      <Text style={styles.sheetLabel}>UNLOCK PROGRESS</Text>
+                      <Text style={styles.progressCounter}>
+                        {getQualifyingSessions(selectedExercise.id)}/{profile.unlockThreshold}
+                      </Text>
+                    </View>
+                    <ProgressBar 
+                      progress={getQualifyingSessions(selectedExercise.id) / profile.unlockThreshold} 
+                      color={MuscleGroupColors[selectedExercise.group]} 
+                      height={12}
+                    />
+                    <Text style={styles.sheetDescSmall}>
+                      Hit {selectedExercise.targetRepsToUnlock} reps × {selectedExercise.targetSetsToUnlock} sets to qualify
                     </Text>
                   </>
                 )}
@@ -385,7 +390,29 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     fontSize: FontSizes.xl,
     fontWeight: '800',
-    marginBottom: Spacing.md,
+    marginBottom: Spacing.xs,
+  },
+  sheetSubtitle: {
+    color: Colors.textSecondary,
+    fontSize: FontSizes.sm,
+    marginBottom: Spacing.lg,
+  },
+  sheetRowBetween: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+  },
+  progressCounter: {
+    color: Colors.accent,
+    fontSize: FontSizes.sm,
+    fontWeight: '800',
+  },
+  sheetDescSmall: {
+    color: Colors.textSecondary,
+    fontSize: FontSizes.xs,
+    marginTop: Spacing.sm,
+    lineHeight: 16,
   },
   sheetRow: {
     flexDirection: 'row',

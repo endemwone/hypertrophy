@@ -137,6 +137,22 @@ const initialRoutines: Routine[] = [
       'passive_dead_hang', 'doorway_pec_stretch', 'seated_pike_stretch'
     ],
     supersetPairs: []
+  },
+  {
+    id: 'routine_warmup_vr',
+    name: 'Pre-Flail VR Warmup',
+    exerciseIds: [
+      'neck_rolls', 'helicopter_arms', 'wrist_figure_eights', 'matrix_duck'
+    ],
+    supersetPairs: []
+  },
+  {
+    id: 'routine_warmdown_vr',
+    name: 'Reality Re-Entry Warmdown',
+    exerciseIds: [
+      'horizon_stare', 'chin_tucks', 'doorway_pec_stretch', 'forearm_massage'
+    ],
+    supersetPairs: []
   }
 ];
 

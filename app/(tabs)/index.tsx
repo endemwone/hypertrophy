@@ -15,7 +15,7 @@ import { useStore } from '@/store/useStore';
 import { MuscleGroup, Exercise, Equipment } from '@/store/types';
 import { getTodayString, daysBetween } from '@/utils/dateUtils';
 import { generateUUID } from '@/utils/uuid';
-import { Colors, FontSizes, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, FontSizes, Spacing, BorderRadius, Shadows } from '@/constants/theme';
 import EquipmentToggle from '@/components/EquipmentToggle';
 import RoutineCard from '@/components/RoutineCard';
 import CreateRoutineModal from '@/components/CreateRoutineModal';
@@ -141,22 +141,24 @@ export default function DashboardScreen() {
         contentContainerStyle={styles.scrollContent}
       >
         {/* Header */}
-        <Text style={styles.greeting}>{greeting}</Text>
-
-        {/* Streak */}
-        <View style={styles.streakPill}>
-          <Text style={styles.streakText}>
-            {streak > 0
-              ? `🔥 ${streak} day streak`
-              : 'Start your streak today.'}
+        <View style={styles.header}>
+          <Text style={styles.greeting}>
+            Ready to suffer, <Text style={{ color: Colors.accent }}>{profile.name || 'Athlete'}</Text>?
           </Text>
+          <View style={styles.streakPill}>
+            <Feather name="zap" size={14} color={Colors.accent} />
+            <Text style={styles.streakText}>
+              {streak > 0 ? `${streak} DAY STREAK` : 'START YOUR STREAK'}
+            </Text>
+          </View>
         </View>
 
         {/* Deload Banner */}
         {showDeload && (
           <View style={styles.deloadBanner}>
+            <Feather name="alert-triangle" size={20} color={Colors.warning} />
             <Text style={styles.deloadText}>
-              You've been away for {daysSinceLastSession} days. Ease back in? 👀
+              Away for {daysSinceLastSession} days. Ease back in? 👀
             </Text>
             <TouchableOpacity
               onPress={() => setDeloadDismissed(true)}
@@ -167,21 +169,43 @@ export default function DashboardScreen() {
           </View>
         )}
 
-        {/* Equipment Toggle */}
-        <Text style={styles.sectionLabel}>EQUIPMENT</Text>
-        <EquipmentToggle />
-
-        {/* Chaos Mode */}
+        {/* Chaos Mode Launcher */}
         <TouchableOpacity
-          style={styles.chaosButton}
+          style={styles.chaosCard}
           onPress={handleChaosMode}
-          activeOpacity={0.7}
+          activeOpacity={0.8}
         >
-          <Text style={styles.chaosText}>🎲 Chaos Mode — Surprise Me</Text>
+          <View style={styles.chaosGlow} />
+          <View style={styles.chaosContent}>
+            <View>
+              <Text style={styles.chaosTitle}>🔀 CHAOS MODE™</Text>
+              <Text style={styles.chaosSubtitle}>Generate a surprise session</Text>
+            </View>
+            <Feather name="zap" size={24} color={Colors.accent} />
+          </View>
         </TouchableOpacity>
 
+        {/* Equipment Toggle */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionLabel}>EQUIPMENT</Text>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{availableEquipment.length} ACTIVE</Text>
+          </View>
+        </View>
+        <EquipmentToggle />
+
         {/* Routines */}
-        <Text style={styles.sectionLabel}>YOUR ROUTINES</Text>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionLabel}>YOUR ROUTINES</Text>
+          <TouchableOpacity 
+            onPress={() => {
+              setEditRoutineId(null);
+              setShowCreateModal(true);
+            }}
+          >
+            <Text style={styles.addText}>NEW +</Text>
+          </TouchableOpacity>
+        </View>
 
         {routines.length === 0 ? (
           <TouchableOpacity
@@ -195,17 +219,19 @@ export default function DashboardScreen() {
             <Text style={styles.emptyText}>Create your first routine</Text>
           </TouchableOpacity>
         ) : (
-          routines.map((r) => (
-            <RoutineCard
-              key={r.id}
-              routine={r}
-              onPress={() => handleRoutinePress(r.id)}
-              onLongPress={() => handleRoutineLongPress(r.id)}
-            />
-          ))
+          <View style={styles.routineGrid}>
+            {routines.map((r) => (
+              <RoutineCard
+                key={r.id}
+                routine={r}
+                onPress={() => handleRoutinePress(r.id)}
+                onLongPress={() => handleRoutineLongPress(r.id)}
+              />
+            ))}
+          </View>
         )}
 
-        <View style={{ height: 100 }} />
+        <View style={{ height: 120 }} />
       </ScrollView>
 
       {/* FAB */}
@@ -241,85 +267,132 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 20,
   },
-  greeting: {
-    color: Colors.textPrimary,
-    fontSize: FontSizes.xxl,
-    fontWeight: '900',
+  header: {
     paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.xl,
-    paddingBottom: Spacing.md,
-    letterSpacing: -0.5,
+    paddingBottom: Spacing.lg,
+  },
+  greeting: {
+    color: Colors.textPrimary,
+    fontSize: FontSizes.xxxl,
+    fontWeight: '900',
+    letterSpacing: -1,
+    marginBottom: Spacing.sm,
   },
   streakPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: Colors.surfaceElevated,
-    marginHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.xl,
+    alignSelf: 'flex-start',
+    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.md,
     borderRadius: BorderRadius.pill,
+    gap: Spacing.xs,
     borderWidth: 1,
     borderColor: Colors.surfaceBorder,
-    marginBottom: Spacing.lg,
   },
   streakText: {
-    color: Colors.textPrimary,
-    fontSize: FontSizes.md,
-    fontWeight: '600',
-    textAlign: 'center',
+    color: Colors.textSecondary,
+    fontSize: FontSizes.xs,
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   deloadBanner: {
     backgroundColor: Colors.deloadBg,
     marginHorizontal: Spacing.lg,
     padding: Spacing.lg,
-    borderRadius: BorderRadius.md,
+    borderRadius: BorderRadius.lg,
     borderWidth: 1,
     borderColor: Colors.deloadBorder,
     marginBottom: Spacing.lg,
     flexDirection: 'row',
     alignItems: 'center',
+    gap: Spacing.md,
   },
   deloadText: {
     color: Colors.warning,
     fontSize: FontSizes.sm,
-    fontWeight: '600',
+    fontWeight: '700',
     flex: 1,
   },
   deloadClose: {
-    padding: Spacing.sm,
-    minWidth: 48,
-    minHeight: 48,
-    alignItems: 'center',
+    padding: Spacing.xs,
+  },
+  chaosCard: {
+    marginHorizontal: Spacing.lg,
+    height: 90,
+    backgroundColor: Colors.surfaceElevated,
+    borderRadius: BorderRadius.xl,
+    overflow: 'hidden',
+    position: 'relative',
     justifyContent: 'center',
+    marginBottom: Spacing.xl,
+    ...Shadows.md,
+  },
+  chaosGlow: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 6,
+    backgroundColor: Colors.accent,
+  },
+  chaosContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.xl,
+  },
+  chaosTitle: {
+    color: Colors.textPrimary,
+    fontSize: FontSizes.lg,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
+  chaosSubtitle: {
+    color: Colors.textMuted,
+    fontSize: FontSizes.xs,
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.xl,
+    paddingBottom: Spacing.sm,
   },
   sectionLabel: {
     color: Colors.textSecondary,
     fontSize: FontSizes.xs,
-    fontWeight: '800',
+    fontWeight: '900',
     letterSpacing: 2,
-    paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.xl,
-    paddingBottom: Spacing.md,
   },
-  chaosButton: {
-    backgroundColor: Colors.surfaceElevated,
-    marginHorizontal: Spacing.lg,
-    paddingVertical: Spacing.lg,
-    borderRadius: BorderRadius.md,
-    borderWidth: 1,
-    borderColor: Colors.surfaceBorder,
-    alignItems: 'center',
-    marginTop: Spacing.md,
-    minHeight: 56,
-    justifyContent: 'center',
+  addText: {
+    color: Colors.accent,
+    fontSize: FontSizes.xs,
+    fontWeight: '900',
+    letterSpacing: 1,
   },
-  chaosText: {
-    color: Colors.textPrimary,
-    fontSize: FontSizes.md,
-    fontWeight: '700',
+  badge: {
+    backgroundColor: Colors.surfaceBorder,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.sm,
+  },
+  badgeText: {
+    color: Colors.textMuted,
+    fontSize: 9,
+    fontWeight: '900',
+  },
+  routineGrid: {
+    paddingHorizontal: Spacing.md,
   },
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: Spacing.xxxl + Spacing.xxxl,
+    paddingVertical: Spacing.huge,
     gap: Spacing.md,
   },
   emptyText: {
@@ -330,15 +403,12 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     right: Spacing.lg,
-    width: 56,
-    height: 56,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: Colors.accent,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 8,
-    shadowColor: Colors.accent,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
+    ...Shadows.accent,
   },
 });

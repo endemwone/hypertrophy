@@ -129,10 +129,16 @@ export default function WorkoutScreen() {
             // Timer done
             clearInterval(timerRef.current!);
             setTimerActive(false);
-            Vibration.vibrate([500, 500, 500, 500, 500]);
+            Vibration.vibrate([100, 100, 100]); // Short vibration
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             return 0;
           }
+
+          // Haptic ticking for final 5 seconds
+          if (prev <= 6) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          }
+
           return prev - 1;
         });
       }, 1000);
